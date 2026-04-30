@@ -7,7 +7,7 @@ export const projectId = (() => {
   return match?.[1] ?? '';
 })();
 
-export const supabaseFunctionsBaseUrl = `${supabaseUrl}/functions/v1/make-server-e1ac9291`;
+export const supabaseFunctionsBaseUrl = `${supabaseUrl}/functions/v1/server`;
 
 if (!supabaseUrl || !publicAnonKey || !projectId) {
   console.warn(

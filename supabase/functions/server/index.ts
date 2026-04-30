@@ -2,10 +2,10 @@ import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
 import { createClient } from "npm:@supabase/supabase-js";
-import * as kv from "./kv_store.tsx";
+import * as kv from "./kv_store.ts";
 
 const app = new Hono();
-const BASE_PATH = "/make-server-e1ac9291";
+const BASE_PATH = "/server";
 const IMPORT_SECRET = Deno.env.get("IMPORT_SECRET") ?? "";
 
 type AllowedAttendee = {
