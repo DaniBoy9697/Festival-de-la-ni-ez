@@ -312,6 +312,7 @@ app.post(`${BASE_PATH}/activities`, async (c) => {
 });
 
 // Import activities from Google Sheets (protected with IMPORT_SECRET)
+// Body opcional: { activities: [...], attendees: [{ email, full_name?, attends_interclubes?, is_active? }] }
 app.post(`${BASE_PATH}/activities/import`, async (c) => {
   try {
     const secret = c.req.header("x-import-secret");
@@ -321,9 +322,12 @@ app.post(`${BASE_PATH}/activities/import`, async (c) => {
 
     const body = await c.req.json();
     const activities = Array.isArray(body?.activities) ? body.activities : [];
+    const attendeesPayload = Array.isArray(body?.attendees) ? body.attendees : [];
 
-    if (activities.length === 0) {
-      return c.json({ error: "activities is required and must be a non-empty array" }, 400);
+    if (activities.length === 0 && attendeesPayload.length === 0) {
+      return c.json({
+        error: "Provide non-empty activities and/or attendees array",
+      }, 400);
     }
 
     let imported = 0;
@@ -355,7 +359,43 @@ app.post(`${BASE_PATH}/activities/import`, async (c) => {
       imported += 1;
     }
 
-    return c.json({ success: true, imported });
+    let attendeesSynced = 0;
+    if (attendeesPayload.length > 0) {
+      const sb = supabaseClient();
+      type AttendeeRow = {
+        email: string;
+        full_name: string | null;
+        attends_interclubes: boolean;
+        is_active: boolean;
+      };
+      const byEmail = new Map<string, AttendeeRow>();
+
+      for (const row of attendeesPayload) {
+        const email = normalizeEmail(String(row?.email ?? ""));
+        if (!email) continue;
+        const fn = row?.full_name;
+        byEmail.set(email, {
+          email,
+          full_name: typeof fn === "string" ? fn.trim() : fn ?? null,
+          attends_interclubes: Boolean(row?.attends_interclubes),
+          is_active: row?.is_active !== false,
+        });
+      }
+
+      const rows = [...byEmail.values()];
+      if (rows.length > 0) {
+        const { error: upsertError } = await sb.from("attendees").upsert(rows, {
+          onConflict: "email",
+        });
+        if (upsertError) {
+          console.log(`attendees upsert: ${upsertError.message}`);
+          return c.json({ error: upsertError.message }, 400);
+        }
+        attendeesSynced = rows.length;
+      }
+    }
+
+    return c.json({ success: true, imported, attendeesSynced });
   } catch (error) {
     console.log(`Error importing activities: ${error}`);
     return c.json({ error: "Failed to import activities" }, 500);
