@@ -1,11 +1,29 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '/utils/supabase/client';
 import { publicAnonKey, supabaseFunctionsBaseUrl } from '/utils/supabase/info';
+import { LOCATIONS } from '@/constants/event';
 import Auth from './components/Auth';
 import Navigation from './components/Navigation';
 import Dashboard from './components/Dashboard';
 import Activities from './components/Activities';
 import Map from './components/Map';
+import InstallAppPrompt from './components/InstallAppPrompt';
+
+const defaultLocations = (): {
+  service: Location;
+  interclubes: Location;
+} => ({
+  service: {
+    lat: LOCATIONS.service.lat,
+    lng: LOCATIONS.service.lng,
+    name: `${LOCATIONS.service.shortLabel} — ${LOCATIONS.service.address}`,
+  },
+  interclubes: {
+    lat: LOCATIONS.interclubes.lat,
+    lng: LOCATIONS.interclubes.lng,
+    name: `${LOCATIONS.interclubes.shortLabel} — ${LOCATIONS.interclubes.address}`,
+  },
+});
 
 interface Activity {
   id: string;
@@ -37,10 +55,7 @@ export default function App() {
   const [locations, setLocations] = useState<{
     service: Location;
     interclubes: Location;
-  }>({
-    service: { lat: 14.6349, lng: -90.5069, name: 'Ciudad de Guatemala' },
-    interclubes: { lat: 14.6349, lng: -90.5069, name: 'Ciudad de Guatemala' },
-  });
+  }>(defaultLocations);
   const [loadingActivities, setLoadingActivities] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
 
@@ -137,7 +152,23 @@ export default function App() {
       }
 
       const data = await response.json();
-      setLocations(data);
+      const defs = defaultLocations();
+      setLocations({
+        service: {
+          lat: defs.service.lat,
+          lng: defs.service.lng,
+          name:
+            data.service?.name?.trim() ||
+            defs.service.name,
+        },
+        interclubes: {
+          lat: defs.interclubes.lat,
+          lng: defs.interclubes.lng,
+          name:
+            data.interclubes?.name?.trim() ||
+            defs.interclubes.name,
+        },
+      });
     } catch (error) {
       console.error('Error fetching locations:', error);
     }
@@ -150,6 +181,13 @@ export default function App() {
       fetchLocations();
     }
   }, [accessToken, userProfile]);
+
+  useEffect(() => {
+    if (!userProfile) return;
+    if (!userProfile.attendsInterclubes && currentPage === 'interclubes') {
+      setCurrentPage('dashboard');
+    }
+  }, [userProfile, currentPage]);
 
   const handleAuthSuccess = (token: string) => {
     setAccessToken(token);
@@ -184,6 +222,7 @@ export default function App() {
   // Render main app
   return (
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
+      <InstallAppPrompt />
       <Navigation
         currentPage={currentPage}
         onNavigate={setCurrentPage}
@@ -210,6 +249,7 @@ export default function App() {
             lng={locations.service.lng}
             name={locations.service.name}
             type="service"
+            googleMapsUrl={LOCATIONS.service.googleMapsUrl}
           />
         )}
 
@@ -219,6 +259,7 @@ export default function App() {
             lng={locations.interclubes.lng}
             name={locations.interclubes.name}
             type="interclubes"
+            googleMapsUrl={LOCATIONS.interclubes.googleMapsUrl}
           />
         )}
       </main>

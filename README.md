@@ -44,17 +44,16 @@ values
   ('persona2@email.com', 'Persona Dos', false, true);
 ```
 
-### 4) Instalar Supabase CLI (una sola vez)
+### 4) Usar Supabase CLI
 
 ```bash
-npm install -g supabase
-supabase login
+npx supabase@latest login
 ```
 
 ### 5) Vincular este repo con tu proyecto
 
 ```bash
-supabase link --project-ref <tu_project_ref>
+npx supabase@latest link --project-ref <tu_project_ref>
 ```
 
 `<tu_project_ref>` es el subdominio de tu URL (`https://<project_ref>.supabase.co`).
@@ -62,7 +61,7 @@ supabase link --project-ref <tu_project_ref>
 ### 6) Configurar secretos de Edge Functions
 
 ```bash
-supabase secrets set SUPABASE_URL=https://<tu_project_ref>.supabase.co SUPABASE_SERVICE_ROLE_KEY=<tu_service_role_key> IMPORT_SECRET=<tu_clave_larga>
+npx supabase@latest secrets set SUPABASE_URL=https://<tu_project_ref>.supabase.co SUPABASE_SERVICE_ROLE_KEY=<tu_service_role_key> IMPORT_SECRET=<tu_clave_larga>
 ```
 
 ### 7) Desplegar backend (Edge Function)
@@ -70,14 +69,14 @@ supabase secrets set SUPABASE_URL=https://<tu_project_ref>.supabase.co SUPABASE_
 Este es el paso clave que te faltaba.
 
 ```bash
-supabase functions deploy server
+npx supabase@latest functions deploy server
 ```
 
 ### 8) Probar backend
 
 Abre en navegador:
 
-`https://<tu_project_ref>.supabase.co/functions/v1/make-server-e1ac9291/health`
+`https://<tu_project_ref>.supabase.co/functions/v1/server/health`
 
 Debe devolver algo como:
 
@@ -112,7 +111,7 @@ Y haz deploy normal.
 ## Importación desde Google Spreadsheet
 
 1. Usa el endpoint:
-   - `POST /functions/v1/make-server-e1ac9291/activities/import`
+   - `POST /functions/v1/server/activities/import`
 2. Envía header:
    - `x-import-secret: <IMPORT_SECRET>`
 3. Envía body:

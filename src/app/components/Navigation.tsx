@@ -1,4 +1,5 @@
 import { Home, Calendar, MapPin, LogOut, Users } from 'lucide-react';
+import FestivalLogo from './FestivalLogo';
 
 interface NavigationProps {
   currentPage: string;
@@ -24,11 +25,9 @@ export default function Navigation({ currentPage, onNavigate, onLogout, showInte
       <nav className="hidden md:flex bg-white shadow-md border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-[#EBB205] flex items-center justify-center text-white font-bold text-xl">
-                F
-              </div>
-              <span className="font-bold text-gray-800">Festival de la Niñez</span>
+            <div className="flex items-center gap-3">
+              <FestivalLogo className="h-10 w-auto max-h-10 max-w-[140px]" />
+              <span className="font-bold text-gray-800 hidden sm:inline">Festival de la Niñez</span>
             </div>
 
             <div className="flex items-center gap-2">

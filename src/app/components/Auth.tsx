@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createClient } from '/utils/supabase/client';
 import { publicAnonKey, supabaseFunctionsBaseUrl } from '/utils/supabase/info';
+import FestivalLogo from './FestivalLogo';
 
 interface AuthProps {
   onAuthSuccess: (accessToken: string) => void;
@@ -84,10 +85,18 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-white p-4 relative overflow-hidden">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[linear-gradient(#ccc_1px,transparent_1px),linear-gradient(90deg,#ccc_1px,transparent_1px)] bg-[size:24px_24px]"
+        aria-hidden
+      />
+      <div className="w-full max-w-md relative">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2" style={{ color: '#EBB205' }}>
+          <div className="flex justify-center mb-4">
+            <FestivalLogo className="h-20 w-auto max-w-[200px]" />
+          </div>
+          <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2" style={{ color: '#EBB205' }}>
+            <span aria-hidden>🚀</span>
             Festival de la Niñez
           </h1>
           <p className="text-gray-600">
