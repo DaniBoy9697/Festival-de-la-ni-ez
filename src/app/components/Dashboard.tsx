@@ -177,7 +177,7 @@ export default function Dashboard({ userName, attendsInterclubes, activitiesCoun
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[#EBB205] text-[#b8860b] font-semibold px-5 py-3 hover:bg-[#EBB205]/10 transition-colors"
             >
-              Enlace corto (QR guía)
+              Guía del festival (PDF)
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>

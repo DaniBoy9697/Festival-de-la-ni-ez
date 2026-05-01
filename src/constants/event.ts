@@ -19,8 +19,9 @@ export const LOCATIONS = {
     address: 'Fraccionamiento Paraíso Tlahuica, Ayala, Morelos',
     googleMapsUrl:
       'https://www.google.com/maps/dir/?api=1&destination=18.757053847004872,-98.83704925766997',
-    /** Enlace corto de la guía (alternativa) */
-    mapsShortLink: 'https://maps.app.goo.gl/PYo9Tyh7Qo9uJCARB',
+    /** Guía del festival (PDF en Drive) */
+    mapsShortLink:
+      'https://drive.google.com/file/d/1vdfgJG-wCDuzy6pleOGMEmkoU2PJMzjQ/view?usp=sharing',
   },
 } as const;
 
